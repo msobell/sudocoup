@@ -20,15 +20,23 @@ class BoardState:
 
         # ADD|0 0 0 1 3 4 0 8 9|3 0 0 0 0 5 0 0 0| ... |0 2 0 0 1 0 0 6 0
         # make a 2D array
-        for i in range(len(self.inp)):
-            row = self.inp[i].split(' ')
-            self.board.append([])
-            for j in range(len(row)):
-                self.board[i].append(int(row[j]))
+        # for i in range(len(self.inp)):
+        #     row = self.inp[i].split(' ')
+        #     self.board.append([])
+        #     for j in range(len(row)):
+        #         self.board[i].append(int(row[j]))
+
+        for i in self.inp:
+            for j in i.split(' '):
+                self.board.append(int(j))
 
     def printBoard(self):
-        for row in self.board:
-            print row
+        count = 0
+        for i in self.board:
+            if count % 9 == 0:
+                print ""
+            print i
+            count += 1
 
     def same_row(self,i,j): return (i/9 == j/9)
     def same_col(self,i,j): return (i-j) % 9 == 0
@@ -47,7 +55,7 @@ class BoardState:
             if self.board[x] == 0: # spot isn't already taken
                 excluded_numbers = set()
                 for y in range(81):
-                    if same_row(x,y) or same_col(x,y) or same_block(x,y):
+                    if self.same_row(x,y) or self.same_col(x,y) or self.same_block(x,y):
                         excluded_numbers.add(self.board[y])
 
                 for n in range(0,9):
@@ -71,7 +79,6 @@ class BoardState:
             y += 9
 
         return moves
-                        
 
 def usage():
     sys.stdout.write( __doc__ % os.path.basename(sys.argv[0]))
@@ -79,6 +86,10 @@ def usage():
 def printTime():
     print "Time:\t\t" + repr(round(time.time() - start_time,4))
         
+def format_move(x):
+    # 81 n
+    return("x y n\n" % repr(x[0]/9),repr(x[0]%9),repr(x[1]))
+
 def make_move( line ):
     b = BoardState( line )
     print "Current board:"
@@ -89,10 +100,15 @@ def make_move( line ):
         prev_col = int(prev_move.split(' ')[1])
     except:
         print "no prev move!"
+        prev_row = 5
+        prev_col = 5
 
-    b.find_moves(prev_row,prev_col)
+    moves = b.find_moves(prev_row,prev_col)
 
-    
+    print "Moves:\n",moves
+
+    return format_move(moves[0]) # TODO - fix this
+
 ## From:
 ## Charles J. Scheffold
 ## cjs285@nyu.edu
