@@ -8,7 +8,9 @@ import os
 import sys
 import time
 import math
-HOST = localhost
+import socket
+import string
+HOST = "localhost"
 PORT = 44444
 prev_move = None
 start_time = time.time()
@@ -127,7 +129,7 @@ def SReadLine (conn):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 1:
+    if len(sys.argv) != 2:
         usage()
         sys.exit(1)
 
@@ -149,6 +151,8 @@ if __name__ == "__main__":
         if len(line.split(' ')) == 4:
             prev_move = line.split(' ')
         if "ADD" in line:
-            make_move( line )
+            m = make_move( line )
+            print "My move:",m
+            s.send( m )
 
     printTime()
